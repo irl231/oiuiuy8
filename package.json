@@ -1,0 +1,25 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:server": "cd packages/server && pnpm dev",
+    "dev:client": "cd packages/client && pnpm dev",
+    "lint": "biome check --write",
+    "lint:ci": "biome check"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.13.17",
+    "typescript": "^5.8.2"
+  },
+  "workspaces": [
+    "packages/client",
+    "packages/server",
+    "packages/shared"
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

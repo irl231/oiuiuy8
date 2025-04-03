@@ -1,0 +1,31 @@
+{
+  "name": "@aqwps/server",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start:api": "NODE_ENV=production node --enable-source-maps dist/server/src/apiServer.js --api-server",
+    "start:game": "NODE_ENV=production node --enable-source-maps dist/server/src/gameServer.js --game-server",
+    "start:dev": "NODE_ENV=production node --enable-source-maps dist/server/src/devServer.js",
+    "dev": "node -r ts-node/register --watch --watch-preserve-output --watch-path=../shared --watch-path=./src src/dev.ts",
+    "dev:api": "node -r ts-node/register --watch --watch-preserve-output --watch-path=../shared --watch-path=./src src/api/index.ts --api-server",
+    "dev:game": "node -r ts-node/register --watch --watch-preserve-output --watch-path=../shared --watch-path=./src src/game/index.ts --game-server"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.0",
+    "etag": "^1.8.1",
+    "hono": "^4.7.5",
+    "is-ip": "^5.0.1",
+    "isbot": "^5",
+    "mime-types": "^3.0.1",
+    "nanotimer": "^0.3.15",
+    "pretty-cache-header": "^1.0.0",
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/etag": "^1.8.3",
+    "@types/mime-types": "^2.1.4",
+    "@types/nanotimer": "^0.3.2",
+    "@types/node": "^22.13.17",
+    "ts-node": "^10.9.2"
+  }
+}
