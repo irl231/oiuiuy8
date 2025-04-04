@@ -19,7 +19,8 @@ class Api {
 		this.#app
 			.use(compress({ encoding: "gzip" }), prettyJSON({ space: 4 }), clientIp())
 			.route("/", routes)
-			.onError((err) => {
+			.onError((err, c) => {
+        this.#logger.log(err, c.req.url)
 				if (err instanceof HTTPException) return err.getResponse();
 				return new Response("Caught Unknown Error", {
 					status: 500,

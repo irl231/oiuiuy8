@@ -33,19 +33,19 @@ interface ServerOpts {
 }
 
 export interface ServerConfig {
-  dev: ServerOpts;
+  website: ServerOpts;
   game: ServerOpts;
   api: ServerOpts;
 }
 
 class Config {
-  private serverConfig: ServerConfig;
+  #serverConfig: ServerConfig;
 
   constructor() {
-    this.serverConfig = {
-      dev: {
-        host: "127.0.0.1",
-        port: 8001,
+    this.#serverConfig = {
+      website: {
+        host: "0.0.0.0",
+        port: 3000,
       },
       api: {
         host: "0.0.0.0",
@@ -57,11 +57,11 @@ class Config {
       },
     };
 
-    this.serverConfig.game.apiUrl = `http://${this.serverConfig.api.host}:${this.serverConfig.api.port}`;
+    this.#serverConfig.game.apiUrl = `http://${getURL(this.#serverConfig.api.port)}`;
   }
 
-  public get server(): ServerConfig {
-    return this.serverConfig;
+  get server(): ServerConfig {
+    return this.#serverConfig;
   }
 }
 

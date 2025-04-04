@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "dev:server": "cd packages/server && pnpm dev",
-    "dev:client": "cd packages/client && pnpm dev",
-    "lint": "biome check --write",
-    "lint:ci": "biome check"
+    "dev:client": "cd packages/client && pnpm dev"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@ntnyq/eslint-config": "^4.0.3",
     "@types/node": "^22.13.17",
+    "cross-env": "^7.0.3",
     "typescript": "^5.8.2"
   },
   "workspaces": [
@@ -19,6 +18,7 @@
   ],
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@biomejs/biome",
       "esbuild"
     ]
   }

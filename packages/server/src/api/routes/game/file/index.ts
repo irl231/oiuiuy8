@@ -1,7 +1,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { stat } from "node:fs/promises";
 import { extname, join } from "node:path";
-import { cwd } from "node:process";
+import {  cwd } from "node:process";
 
 import { Hono } from "hono";
 
@@ -10,8 +10,8 @@ import { lookup } from "mime-types";
 import { cacheHeader } from "pretty-cache-header";
 
 import { cache } from "../../../middleware/cache";
-import { sendFile, isFlashRequest, isTrustedReferer, isTrustedUA } from "./lib";
-import { Readable } from "node:stream";
+import { sendFile } from "../../../../utils/send-file";
+import { isFlashRequest } from "../../../../utils/flash-request";
 
 const app = new Hono();
 
@@ -21,9 +21,10 @@ app.use(cache({ maxAge: "1day" }), async (c, next) => {
     return;
   }
 
-  let filePath = c.req.query("path") ?? "";
+  let filePath = encodeURIComponent(c.req.query("path") ?? "");
   const headers = new Headers(c.req.raw.headers);
   const type = lookup(extname(filePath)) || "application/octet-stream";
+  const hasFlash = isFlashRequest(headers);
 
   try {
     filePath = join(cwd(), "..", "..", "gamefiles", filePath);
@@ -41,23 +42,22 @@ app.use(cache({ maxAge: "1day" }), async (c, next) => {
       // return new Response(null, { status: 304 });
     }
 
-    const sendFakSWF = !(isFlashRequest(headers) && isTrustedReferer(headers) && isTrustedUA(headers) && type === "application/x-shockwave-flash");
-    return new Response(sendFile(filePath, sendFakSWF), {
+    return new Response(sendFile(filePath, !hasFlash), {
       headers: {
         ETag: etag,
         "Last-Modified": lastModified,
         "Cache-Control": cacheHeader({ noCache: true  }),
         "Content-Type": `${type}${/^text\/|^application\/(json|yaml|toml|xml|javascript)$/.test(type) ? "; charset=utf-8" : ""}`,
         "Content-Length": size.toString(),
-        ...(!isFlashRequest(headers) && {
+        ...(!hasFlash && {
           "Content-Disposition": `inline; filename="what${extname(filePath)}"`,
         }),
       },
     });
-  } catch (error) {
-    if (isFlashRequest(headers)) return new Response(null, { status: 404 });
+  } catch {
+    if (hasFlash) return new Response(null, { status: 404 });
     return next();
   }
 });
 
-export const routeFile = app;
+export default app;
